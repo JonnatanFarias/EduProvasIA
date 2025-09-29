@@ -27,7 +27,7 @@ export function Header() {
               <AvatarFallback>JF</AvatarFallback>
             </Avatar>
             <small className="hidden sm:inline font-medium">Dev. Jonnatan Farias</small>
-            <small className="hidden sm:inline font-medium">V.25-09-1.0</small>
+            <small className="hidden sm:inline font-medium text-[10px] text-red-500 ">(V.25-09-1.0)</small>
           </a>
         </div>
       </div>
