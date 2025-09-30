@@ -283,6 +283,20 @@ export function ExamGenerator() {
               ))}
             </div>
           </div>
+             
+          {/* Quantidade de questões*/}
+          <div className="grid grid-cols-1 gap-4"> 
+            <div className="space-y-2"> 
+              <Label htmlFor="questionCount">Quantidade de questões</Label> 
+              <Input id="questionCount" 
+                      type="number" 
+                      min="5" 
+                      max="50" 
+                      value={config.questionCount} 
+                      onChange={(e) => setConfig((prev) => ({ 
+                        ...prev, questionCount: Number.parseInt(e.target.value) || 10 }))} /> 
+              </div> 
+          </div>  
 
           {/* Tópicos / Assuntos principais */}
           <div className="space-y-2">
@@ -291,6 +305,7 @@ export function ExamGenerator() {
               value={config.topics}
               onChange={(e) => setConfig((prev) => ({ ...prev, topics: e.target.value }))} />
           </div>
+
           {/* Instruções adicionais */}
           <Label>Instruções adicionais</Label>
           <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
