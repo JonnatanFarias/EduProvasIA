@@ -202,12 +202,13 @@ export function ExamGenerator() {
             Configure os parâmetros para gerar uma prova personalizada com IA
           </CardDescription>
         </CardHeader>
-        <div className="flex justify-center">
-          <Badge variant={'destructive'}>
+        <div className="flex justify-center p-2">
+          <Badge variant="destructive" className="whitespace-normal text-center max-w-xs sm:max-w-md">
             Aviso: a IA pode apresentar imprecisões. Revise as questões geradas.
           </Badge>
-
         </div>
+
+
         <CardContent className="space-y-6">
           {/* Seletor de Série/Ano */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

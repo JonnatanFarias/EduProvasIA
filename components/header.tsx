@@ -15,7 +15,7 @@ export function Header() {
         </div>
 
         {/* Perfil + nome */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center  gap-2">
           <a
             href="http://www.linkedin.com/in/jonnatan-farias"
             target="_blank"
@@ -26,8 +26,10 @@ export function Header() {
               <AvatarImage src="https://media.licdn.com/dms/image/v2/D4D03AQGL_f3fXa4dpg/profile-displayphoto-crop_800_800/B4DZmGOM5qH0AI-/0/1758893494903?e=1761782400&v=beta&t=gca3wmChoDTSoPdk-Uz6nqZ1raoXSK1gDoCWBNT_tZg" />
               <AvatarFallback>JF</AvatarFallback>
             </Avatar>
-            <small className="hidden sm:inline font-medium">Dev. Jonnatan Farias</small>
-            <small className="hidden sm:inline font-medium text-[10px] text-red-500 ">(V.25-09-1.0)</small>
+                <div className="flex flex-col">
+                    <small className="hidden sm:inline font-medium">Dev. Jonnatan Farias</small>
+                    <small className="hidden sm:inline font-semibold text-[9px] text-red-500 ">( Versão: 25.09.1.1 )</small>
+                </div>
           </a>
         </div>
       </div>
