@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Label } from "@/components/ui/label"
@@ -58,6 +58,38 @@ interface GeneratedExam {
 
 export function ExamGenerator() {
   const { user, userProfile } = useAuth()
+
+  const [cooldown, setCooldown] = useState<number>(0) // segundos restantes
+
+  // 🔹 Quando o componente carrega, calcula se existe cooldown ativo salvo no localStorage
+  useEffect(() => {
+    const lastGenerated = localStorage.getItem("lastGeneratedAt")
+    if (lastGenerated) {
+      const lastTime = parseInt(lastGenerated, 10)
+      const now = Date.now()
+      const diff = Math.floor((now - lastTime) / 1000) // diferença em segundos
+      const remaining = 300 - diff // 5 minutos = 300s
+      if (remaining > 0) {
+        setCooldown(remaining)
+      }
+    }
+  }, [])
+
+  // 🔹 Timer que vai diminuindo o cooldown
+  useEffect(() => {
+    let timer: NodeJS.Timeout
+    if (cooldown > 0) {
+      timer = setInterval(() => {
+        setCooldown((prev) => (prev > 0 ? prev - 1 : 0))
+      }, 1000)
+    }
+    return () => clearInterval(timer)
+  }, [cooldown])
+
+
+
+
+
   const [config, setConfig] = useState<ExamConfig>({
     grade: "",
     subject: "",
@@ -143,7 +175,7 @@ export function ExamGenerator() {
   }
 
   const generateExam = async () => {
-    if (!user) return
+    if (!user || cooldown > 0) return
 
     setIsGenerating(true)
     setError("")
@@ -176,6 +208,12 @@ export function ExamGenerator() {
 
       setGeneratedExam(examData)
       setShowAlert(true)
+
+      // ⏳ Salva hora da geração no localStorage e inicia cooldown
+      localStorage.setItem("lastGeneratedAt", Date.now().toString())
+      setCooldown(300) // 5 minutos
+
+
     } catch (err) {
       console.error(err)
       setError("Erro ao gerar prova. Tente novamente.")
@@ -283,20 +321,21 @@ export function ExamGenerator() {
               ))}
             </div>
           </div>
-             
+
           {/* Quantidade de questões*/}
-          <div className="grid grid-cols-1 gap-4"> 
-            <div className="space-y-2"> 
-              <Label htmlFor="questionCount">Quantidade de questões</Label> 
-              <Input id="questionCount" 
-                      type="number" 
-                      min="5" 
-                      max="50" 
-                      value={config.questionCount} 
-                      onChange={(e) => setConfig((prev) => ({ 
-                        ...prev, questionCount: Number.parseInt(e.target.value) || 10 }))} /> 
-              </div> 
-          </div>  
+          <div className="grid grid-cols-1 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="questionCount">Quantidade de questões</Label>
+              <Input id="questionCount"
+                type="number"
+                min="5"
+                max="50"
+                value={config.questionCount}
+                onChange={(e) => setConfig((prev) => ({
+                  ...prev, questionCount: Number.parseInt(e.target.value) || 10
+                }))} />
+            </div>
+          </div>
 
           {/* Tópicos / Assuntos principais */}
           <div className="space-y-2">
@@ -348,11 +387,20 @@ export function ExamGenerator() {
           )}
 
           <div className="flex gap-3 pt-4">
-            <Button onClick={generateExam} disabled={!isConfigValid || isGenerating} className="flex-1">
+            <Button
+              onClick={generateExam}
+              disabled={!isConfigValid || isGenerating || cooldown > 0}
+              className="flex-1 cursor-pointer"
+            >
               {isGenerating ? (
                 <>
                   <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin mr-2" />
                   Gerando Prova com IA...
+                </>
+              ) : cooldown > 0 ? (
+                <>
+                  ⏳ Aguarde {Math.floor(cooldown / 60)}:
+                  {String(cooldown % 60).padStart(2, "0")}
                 </>
               ) : (
                 <>
