@@ -28,7 +28,7 @@ export function Header() {
             </Avatar>
                 <div className="flex flex-col">
                     <small className="hidden sm:inline font-medium">Dev. Jonnatan Farias</small>
-                    <small className="hidden sm:inline font-semibold text-[9px] text-red-500 ">( Versão: 25.10.1.3 )</small>
+                    <small className="hidden sm:inline font-semibold text-[9px] text-red-500 ">( Versão: 25.10.1.4 )</small>
                 </div>
           </a>
         </div>

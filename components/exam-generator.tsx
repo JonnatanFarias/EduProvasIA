@@ -103,6 +103,7 @@ export function ExamGenerator() {
   const [manualInstructions, setManualInstructions] = useState("") // TEXTO DIGITADO PELO USUÁRIO
   const [showPontos, setShowPontos] = useState(true)
   const [showBncc, setShowBncc] = useState(false)
+  const [showContextoQuestion, setShowContextoQuestion] = useState(false)
   const [pontos, setPontos] = useState<number | "">(1)
 
   const [isGenerating, setIsGenerating] = useState(false)
@@ -170,6 +171,7 @@ export function ExamGenerator() {
     const extras: string[] = []
     if (showPontos && pontos) extras.push(`Informe ao lado da questão que vale ${pontos} ponto(s)`)
     if (showBncc) extras.push("Informe ao lado da questão o código BNCC")
+    if(showContextoQuestion) extras.push("Crie uma explicação prévia referente ao assunto antes de cada questão")
 
     return [manualInstructions, ...extras].filter(Boolean).join("\n")
   }
@@ -227,6 +229,7 @@ export function ExamGenerator() {
     config.subject &&
     config.difficulty &&
     config.questionTypes.length > 0
+
 
   return (
     <div className="space-y-8">
@@ -355,6 +358,10 @@ export function ExamGenerator() {
             <div className="flex items-center space-x-2">
               <Checkbox className="cursor-pointer" checked={showBncc} onCheckedChange={(checked) => setShowBncc(checked as boolean)} />
               <Label className="text-sm font-normal">Informar código BNCC nas questões</Label>
+            </div>
+            <div className="flex items-center space-x-2">
+              <Checkbox className="cursor-pointer" checked={showContextoQuestion} onCheckedChange={(checked) => setShowContextoQuestion(checked as boolean)} />
+              <Label className="text-sm font-normal">Informar um contexto prévio em cada questão</Label>
             </div>
           </div>
 

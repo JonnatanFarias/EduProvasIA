@@ -54,7 +54,20 @@ export async function POST(request: NextRequest) {
     const difficultyText = difficultyMap[difficulty] || difficulty
     const questionTypesText = questionTypes.map((type: string) => questionTypeMap[type] || type).join(", ")
     const topicsText = topics ? `Tópicos específicos: ${topics}` : ""
-    const instructionsText = instructions ? `Instruções adicionais: ${instructions}` : ""
+    // Monta o texto de instruções com reforço para explicações
+    let instructionsText = ""
+
+    if (instructions) {
+      instructionsText = `Instruções adicionais: ${instructions}`
+
+      // Se o usuário pediu explicação/contexto prévio, reforça no prompt
+      if (instructions.toLowerCase().includes("explicação") || instructions.toLowerCase().includes("contexto")) {
+        instructionsText += `
+Cada questão deve começar com uma breve explicação ou contextualização do tema abordado,
+antes do enunciado principal. Essa explicação deve ajudar o aluno a entender o contexto.`
+      }
+    }
+
 
     const prompt = `
 Você é um especialista em educação brasileira. Crie uma prova de ${subjectText} para ${gradeText} com as seguintes especificações:
@@ -91,6 +104,7 @@ Regras importantes:
 - Para a disciplina de matemática tente, colocar questões para realizar cáculos.
 - Para associação, crie duas colunas para associar
 - Todas as questões devem estar alinhadas com a BNCC (Base Nacional Comum Curricular)
+- Sempre inclua o campo "explanation" com uma explicação curta sobre o contexto ou a resposta da questão
 - Use linguagem adequada para a faixa etária
 - Questões devem ser educativas e construtivas
 
@@ -99,7 +113,7 @@ Não inclua texto adicional, apenas o JSON.
 
     // 👇 aqui usamos Gemini corretamente
     const { text } = await generateText({
-      model: google("models/gemini-2.0-flash"), 
+      model: google("models/gemini-2.0-flash"),
       prompt,
       temperature: 0.7,
     })
